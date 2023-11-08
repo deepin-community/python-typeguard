@@ -1,5 +1,27 @@
-template-repository (1.0-1) unstable; urgency=medium
+python-typeguard (2.2.2-2) unstable; urgency=medium
 
-  * Initial release
+  * debian/control
+    - point VCS to the new location for DPT
+    - update team name and email address
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Sandro Tosi <morph@debian.org>  Thu, 09 Jun 2022 14:23:48 -0400
+
+python-typeguard (2.2.2-1) unstable; urgency=medium
+
+  [ Joel Cross ]
+  * Upgrade upstream to 2.2.2
+  * Bump standards-version and debhelper-compat
+
+  [ Sergio Durigan Junior ]
+  * Run "dh_auto_clean" with LC_ALL=C.UTF-8.
+    This is necessary because the author's name contains a special
+    character in "setup.cfg", which causes an error when running "python3
+    setup.py clean".
+
+ -- Joel Cross <joel@kazbak.co.uk>  Mon, 21 Jan 2019 23:18:27 +0000
+
+python-typeguard (2.1.4-1) unstable; urgency=medium
+
+  * Initial release (Closes: #897419)
+
+ -- Joel Cross <joel@kazbak.co.uk>  Wed, 02 May 2018 11:17:21 +0100
