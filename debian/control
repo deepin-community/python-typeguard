@@ -1,15 +1,28 @@
-Source: template-repository
-Section: unknown
+Source: python-typeguard
+Section: python
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Maintainer: Debian Python Team <team+python@tracker.debian.org>
+Uploaders: Joel Cross <joel@kazbak.co.uk>
+Build-Depends: debhelper (>= 12),
+               debhelper-compat (= 12),
+               dh-python,
+               python3-all,
+               python3-setuptools,
+               python3-setuptools-scm
+Standards-Version: 4.3.0
+Homepage: https://github.com/agronholm/typeguard
+Vcs-Git: https://salsa.debian.org/python-team/packages/python-typeguard.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/python-typeguard
+Testsuite: autopkgtest-pkg-python
 
-Package: template-repository
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Package: python3-typeguard
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Run-time type checker for Python
+ This library provides run-time type checking for functions defined with
+ argument type annotations. This can be done in one of three ways:
+  * calling check_argument_types() from within the function body
+  * decorating the function with @typechecked
+  * using `with TypeChecker('packagename')`
+ .
+ This package installs the library for Python 3.
