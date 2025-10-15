@@ -12,7 +12,7 @@ Build-Depends:
  mypy,
  python3-setuptools,
  python3-setuptools-scm,
- python3-typing-extensions (>= 4.10.0),
+ python3-typing-extensions (>= 4.14.0),
 Rules-Requires-Root: no
 Standards-Version: 4.7.0
 Homepage: https://github.com/agronholm/typeguard

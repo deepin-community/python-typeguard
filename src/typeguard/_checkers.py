@@ -172,7 +172,7 @@ def check_callable(
             if unfulfilled_kwonlyargs:
                 raise TypeCheckError(
                     f"has mandatory keyword-only arguments in its declaration: "
-                    f'{", ".join(unfulfilled_kwonlyargs)}'
+                    f"{', '.join(unfulfilled_kwonlyargs)}"
                 )
 
             num_positional_args = num_mandatory_pos_args = 0
@@ -500,8 +500,17 @@ def check_class(
                 )
         finally:
             del errors  # avoid creating ref cycle
-    elif not issubclass(value, expected_class):  # type: ignore[arg-type]
-        raise TypeCheckError(f"is not a subclass of {qualified_name(expected_class)}")
+    else:
+        if isinstance(expected_class, generic_alias_types):
+            expected_class = get_origin(expected_class)
+
+        if isinstance(value, generic_alias_types):
+            value = get_origin(value)
+
+        if not issubclass(value, expected_class):
+            raise TypeCheckError(
+                f"is not a subclass of {qualified_name(expected_class)}"
+            )
 
 
 def check_newtype(
@@ -533,7 +542,7 @@ def check_typevar(
 ) -> None:
     if origin_type.__bound__ is not None:
         annotation = (
-            Type[origin_type.__bound__] if subclass_check else origin_type.__bound__
+            type[origin_type.__bound__] if subclass_check else origin_type.__bound__
         )
         check_type_internal(value, annotation, memo)
     elif origin_type.__constraints__:
@@ -550,7 +559,7 @@ def check_typevar(
                 get_type_name(constraint) for constraint in origin_type.__constraints__
             )
             raise TypeCheckError(
-                f"does not match any of the constraints " f"({formatted_constraints})"
+                f"does not match any of the constraints ({formatted_constraints})"
             )
 
 
@@ -648,7 +657,12 @@ def check_io(
 
 
 def check_signature_compatible(subject: type, protocol: type, attrname: str) -> None:
-    subject_sig = inspect.signature(getattr(subject, attrname))
+    subject_attr = getattr(subject, attrname)
+    try:
+        subject_sig = inspect.signature(subject_attr)
+    except ValueError:
+        return  # this can happen with builtins where the signature cannot be retrieved
+
     protocol_sig = inspect.signature(getattr(protocol, attrname))
     protocol_type: typing.Literal["instance", "class", "static"] = "instance"
     subject_type: typing.Literal["instance", "class", "static"] = "instance"
@@ -1036,7 +1050,7 @@ def builtin_checker_lookup(
         and getattr(origin_type, "__qualname__", "").startswith("NewType.")
         and hasattr(origin_type, "__supertype__")
     ):
-        # typing.NewType on Python 3.9 and below
+        # typing.NewType on Python 3.9
         return check_newtype
 
     return None
@@ -1061,7 +1075,7 @@ def load_plugins() -> None:
             plugin = ep.load()
         except Exception as exc:
             warnings.warn(
-                f"Failed to load plugin {ep.name!r}: " f"{qualified_name(exc)}: {exc}",
+                f"Failed to load plugin {ep.name!r}: {qualified_name(exc)}: {exc}",
                 stacklevel=2,
             )
             continue

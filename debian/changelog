@@ -1,3 +1,18 @@
+python-typeguard (4.4.4-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 18 Aug 2025 15:37:57 +0100
+
+python-typeguard (4.4.2-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+    - Switched to JSON output when running mypy (closes: #1098615).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 24 Feb 2025 01:03:04 +0000
+
 python-typeguard (4.4.1-1) unstable; urgency=medium
 
   * Team upload.

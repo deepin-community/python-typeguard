@@ -373,7 +373,7 @@ class AnnotationTransformer(NodeTransformer):
 
         if isinstance(node.op, BitOr):
             # If either branch of the BinOp has been transformed to `None`, it means
-            # that a type in the union was ignored, so the entire annotation should e
+            # that a type in the union was ignored, so the entire annotation should be
             # ignored
             if not hasattr(node, "left") or not hasattr(node, "right"):
                 return None
@@ -384,6 +384,7 @@ class AnnotationTransformer(NodeTransformer):
             elif self._memo.name_matches(node.right, *anytype_names):
                 return node.right
 
+            # Turn union types to typing.Union constructs on Python 3.9
             if sys.version_info < (3, 10):
                 union_name = self.transformer._get_import("typing", "Union")
                 return Subscript(
@@ -1073,8 +1074,9 @@ class TypeguardTransformer(NodeTransformer):
 
                         path.insert(0, exp.id)
                         name = prefix + ".".join(path)
-                        annotation = self._memo.variable_annotations.get(exp.id)
-                        if annotation:
+                        if len(path) == 1 and (
+                            annotation := self._memo.variable_annotations.get(exp.id)
+                        ):
                             annotations_.append((Constant(name), annotation))
                             check_required = True
                         else:
@@ -1137,8 +1139,20 @@ class TypeguardTransformer(NodeTransformer):
                 func_name,
                 [
                     node.value,
-                    Constant(node.target.id),
-                    annotation,
+                    List(
+                        [
+                            List(
+                                [
+                                    Tuple(
+                                        [Constant(node.target.id), annotation],
+                                        ctx=Load(),
+                                    )
+                                ],
+                                ctx=Load(),
+                            )
+                        ],
+                        ctx=Load(),
+                    ),
                     self._memo.get_memo_name(),
                 ],
                 [],

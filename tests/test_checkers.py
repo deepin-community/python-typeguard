@@ -2,6 +2,7 @@ import collections.abc
 import sys
 import types
 from contextlib import nullcontext
+from datetime import timedelta
 from functools import partial
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -896,8 +897,13 @@ class TestUnion:
 
     @pytest.mark.skipif(sys.version_info < (3, 10), reason="UnionType requires 3.10")
     def test_raw_uniontype_fail(self):
+        if sys.version_info < (3, 14):
+            expected_type = r"\w+\.UnionType"
+        else:
+            expected_type = "Union"
+
         with pytest.raises(
-            TypeCheckError, match=r"class str is not an instance of \w+\.UnionType$"
+            TypeCheckError, match=f"class str is not an instance of {expected_type}$"
         ):
             check_type(str, types.UnionType)
 
@@ -967,6 +973,9 @@ class TestType:
         pytest.raises(TypeCheckError, check_type, int, Type[str]).match(
             "class int is not a subclass of str"
         )
+
+    def test_parametrized_value(self):
+        check_type(list[str], type[list[str]])
 
     @pytest.mark.parametrize(
         "value", [pytest.param(str, id="str"), pytest.param(int, id="int")]
@@ -1382,6 +1391,18 @@ class TestProtocol:
             f"{MyProtocol.__qualname__} protocol because its 'meth' method should "
             f"be a class method but it's an instance method"
         )
+
+    def test_builtin_signature_check(self) -> None:
+        class MyProtocol(Protocol):
+            def attr(self) -> None:
+                pass
+
+        class Foo:
+            attr = timedelta
+
+        # Foo.attr is incompatible but timedelta has not inspectable signature so the
+        # check is skipped
+        check_type(Foo(), MyProtocol)
 
 
 class TestRecursiveType:
