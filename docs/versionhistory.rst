@@ -4,6 +4,19 @@ Version history
 This library adheres to
 `Semantic Versioning 2.0 <https://semver.org/#semantic-versioning-200>`_.
 
+**4.4.2** (2025-02-16)
+
+- Fixed ``TypeCheckError`` in unpacking assignment involving properties of a parameter
+  of the function (`#506 <https://github.com/agronholm/typeguard/issues/506>`_;
+  regression introduced in v4.4.1)
+- Fixed display of module name for forward references
+  (`#492 <https://github.com/agronholm/typeguard/pull/492>`_; PR by @JelleZijlstra)
+- Fixed ``TypeError`` when using an assignment expression
+  (`#510 <https://github.com/agronholm/typeguard/issues/510>`_; PR by @JohannesK71083)
+- Fixed ``ValueError: no signature found for builtin`` when checking against a protocol
+  and a matching attribute in the subject is a built-in function
+  (`#504 <https://github.com/agronholm/typeguard/issues/504>`_)
+
 **4.4.1** (2024-11-03)
 
 - Dropped Python 3.8 support
@@ -22,9 +35,6 @@ This library adheres to
 - Fixed checks against annotations wrapped in ``NotRequired`` not being run unless the
   ``NotRequired`` is a forward reference
   (`#454 <https://github.com/agronholm/typeguard/issues/454>`_)
-- Fixed the ``pytest_ignore_collect`` hook in the pytest plugin blocking default pytest
-  collection ignoring behavior by returning ``None`` instead of ``False``
-  (PR by @mgorny)
 
 **4.4.0** (2024-10-27)
 
@@ -32,8 +42,6 @@ This library adheres to
   (`#465 <https://github.com/agronholm/typeguard/pull/465>`_)
 - Fixed basic support for intersection protocols
   (`#490 <https://github.com/agronholm/typeguard/pull/490>`_; PR by @antonagestam)
-- Fixed protocol checks running against the class of an instance and not the instance
-  itself (this produced wrong results for non-method member checks)
 
 **4.3.0** (2024-05-27)
 
