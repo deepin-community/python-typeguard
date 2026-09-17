@@ -1,9 +1,3 @@
-python-typeguard (4.4.2-2) unstable; urgency=medium
-
-  * Rebuild with LTO enabled (dpkg vendor feature optimize/lto).
-
- -- tunaichao <tunaichao@uniontech.com>  Fri, 11 Sep 2026 17:42:50 +0800
-
 python-typeguard (4.4.2-1) unstable; urgency=medium
 
   * Team upload.
